@@ -1,3 +1,12 @@
+/*
+* Copyright 2015-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+*
+* Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with the License. A copy of the License is located at
+*
+*     http://aws.amazon.com/apache2.0/
+*
+* or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+*/
 package io;
 
 import java.util.ArrayList;
@@ -12,9 +21,9 @@ import java.util.Map;
  * user principal, the AWS account ID of the API owner, and an apiOptions object.
  * The apiOptions can contain an API Gateway RestApi Id, a region for the RestApi, and a
  * stage that calls should be allowed/denied for. For example
- * 
+ *
  * new AuthPolicy(principalId, AuthPolicy.PolicyDocument.getDenyAllPolicy(region, awsAccountId, restApiId, stage));
- * 
+ *
  * @author Jack Kohn
  */
 public class AuthPolicy {
@@ -105,9 +114,9 @@ public class AuthPolicy {
         transient String stage;
 
         /**
-         * Creates a new PolicyDocument with the given context, 
+         * Creates a new PolicyDocument with the given context,
          * and initializes two base Statement objects for allowing and denying access to API Gateway methods
-         * 
+         *
          * @param region the region where the RestApi is configured
          * @param awsAccountId the AWS Account ID that owns the RestApi
          * @param restApiId the RestApi identifier

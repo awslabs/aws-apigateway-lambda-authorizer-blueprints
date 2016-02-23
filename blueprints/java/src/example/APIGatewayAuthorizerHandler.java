@@ -1,3 +1,12 @@
+/*
+* Copyright 2015-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+*
+* Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with the License. A copy of the License is located at
+*
+*     http://aws.amazon.com/apache2.0/
+*
+* or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+*/
 package example;
 
 import io.AuthPolicy;
@@ -8,7 +17,7 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 
 /**
  * Handles IO for a Java Lambda function as a custom authorizer for API Gateway
- * 
+ *
  * @author Jack Kohn
  *
  */
@@ -16,9 +25,9 @@ public class APIGatewayAuthorizerHandler implements RequestHandler<TokenAuthoriz
 
     @Override
     public AuthPolicy handleRequest(TokenAuthorizerContext input, Context context) {
-    	
+
     	String token = input.getAuthorizationToken();
-    	
+
     	// validate the incoming token
         // and produce the principal user identifier associated with the token
 
@@ -36,7 +45,7 @@ public class APIGatewayAuthorizerHandler implements RequestHandler<TokenAuthoriz
 
         // if access is denied, the client will receive a 403 Access Denied response
         // if access is allowed, API Gateway will proceed with the back-end integration configured on the method that was called
-        
+
     	String methodArn = input.getMethodArn();
     	String[] arnPartials = methodArn.split(":");
     	String region = arnPartials[3];
@@ -49,7 +58,7 @@ public class APIGatewayAuthorizerHandler implements RequestHandler<TokenAuthoriz
     	if (apiGatewayArnPartials.length == 4) {
     		resource = apiGatewayArnPartials[3];
     	}
-    	
+
         // this function must generate a policy that is associated with the recognized principal user identifier.
         // depending on your use case, you might store policies in a DB, or generate them on the fly
 
