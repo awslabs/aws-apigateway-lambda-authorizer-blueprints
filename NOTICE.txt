@@ -1,3 +1,3 @@
-API Gateway + Lambda Authorizer Blueprints
+Amazon API Gateway - Custom Authorizer Blueprints for AWS Lambda
 Copyright 2015-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 
