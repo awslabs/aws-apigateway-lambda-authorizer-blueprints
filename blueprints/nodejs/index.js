@@ -255,7 +255,9 @@ AuthPolicy.prototype = (function() {
         }
       }
 
-      statements.push(statement);
+      if (statement.Resource !== null && statement.Resource.length > 0) {
+        statements.push(statement);
+      }
     }
 
     return statements;
