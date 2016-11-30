@@ -9,7 +9,7 @@
 */
 console.log('Loading function');
 
-exports.handler = function(event, context) {
+exports.handler = function(event, context, callback) {
     console.log('Client token: ' + event.authorizationToken);
     console.log('Method ARN: ' + event.methodArn);
 
@@ -23,7 +23,7 @@ exports.handler = function(event, context) {
     var principalId = 'user|a1b2c3d4'
 
     // you can send a 401 Unauthorized response to the client by failing like so:
-    // context.fail("Unauthorized");
+    // callback("Unauthorized", null);
 
     // if the token is valid, a policy must be generated which will allow or deny access to the client
 
@@ -57,7 +57,7 @@ exports.handler = function(event, context) {
     // policy.allowMethod(AuthPolicy.HttpVerb.GET, "/users/username");
 
     // finally, build the policy and exit the function using context.succeed()
-    context.succeed(policy.build());
+    callback(null, policy.build());
 };
 
 /**
