@@ -82,8 +82,8 @@ class AuthPolicy(object):
     conditions statement.
     the build method processes these lists and generates the approriate
     statements for the final policy"""
-     allowMethods = []
-     denyMethods = []
+    allowMethods = []
+    denyMethods = []
 
     restApiId = "*"
     """The API Gateway API id. By default this is set to '*'"""
