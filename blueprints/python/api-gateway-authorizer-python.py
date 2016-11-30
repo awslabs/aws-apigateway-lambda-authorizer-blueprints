@@ -54,8 +54,23 @@ def lambda_handler(event, context):
     policy.denyAllMethods()
     """policy.allowMethod(HttpVerb.GET, "/pets/*")"""
 
-    """finally, build the policy and exit the function using return"""
-    return policy.build()
+    # Finally, build the policy
+    authResponse = policy.build()
+ 
+    # new! -- add additional key-value pairs associated with the authenticated principal
+    # these are made available by APIGW like so: $context.authorizer.<key>
+    # additional context is cached
+    context = {
+        'key': 'value', # $context.authorizer.key -> value
+        'number' : 1,
+        'bool' : True
+    }
+    # context['arr'] = ['foo'] <- this is invalid, APIGW will not accept it
+    # context['obj'] = {'foo':'bar'} <- also invalid
+ 
+    authResponse['context'] = context
+    
+    return authResponse
 
 class HttpVerb:
     GET     = "GET"

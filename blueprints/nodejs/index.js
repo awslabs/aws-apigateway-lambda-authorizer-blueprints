@@ -56,8 +56,21 @@ exports.handler = function(event, context, callback) {
     policy.denyAllMethods();
     // policy.allowMethod(AuthPolicy.HttpVerb.GET, "/users/username");
 
-    // finally, build the policy and exit the function using context.succeed()
-    callback(null, policy.build());
+    // finally, build the policy
+    var authResponse = policy.build();
+    
+    // new! -- add additional key-value pairs
+    // these are made available by APIGW like so: $context.authorizer.<key>
+    // additional context is cached
+    authResponse.context = {
+        key : 'value', // $context.authorizer.key -> value
+        number : 1,
+        bool = true
+    };
+    // authResponse.context.arr = ['foo']; <- this is invalid, APIGW will not accept it
+    // authResponse.context.obj = {'foo':'bar'}; <- also invalid
+ 
+    callback(null, authResponse);
 };
 
 /**
