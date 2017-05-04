@@ -41,7 +41,7 @@ exports.handler = function(event, context, callback) {
     var method = apiGatewayArnTmp[2];
     var resource = '/'; // root resource
     if (apiGatewayArnTmp[3]) {
-      resource += apiGatewayArnTmp[3];
+        resource += apiGatewayArnTmp.slice(3, apiGatewayArnTmp.length).join('/');
     }
 
     // this function must generate a policy that is associated with the recognized principal user identifier.
@@ -58,14 +58,14 @@ exports.handler = function(event, context, callback) {
 
     // finally, build the policy
     var authResponse = policy.build();
-    
+
     // new! -- add additional key-value pairs
     // these are made available by APIGW like so: $context.authorizer.<key>
     // additional context is cached
     authResponse.context = {
         key : 'value', // $context.authorizer.key -> value
         number : 1,
-        bool = true
+        bool: true
     };
     // authResponse.context.arr = ['foo']; <- this is invalid, APIGW will not accept it
     // authResponse.context.obj = {'foo':'bar'}; <- also invalid
