@@ -130,6 +130,8 @@ public class AuthPolicy {
             allowStatement = Statement.getEmptyInvokeStatement("Allow");
             denyStatement = Statement.getEmptyInvokeStatement("Deny");
             this.statements = new ArrayList<>();
+            statements.add(allowStatement);
+            statements.add(denyStatement);
         }
 
         public String getVersion() {
@@ -141,8 +143,6 @@ public class AuthPolicy {
         }
 
         public AuthPolicy.Statement[] getStatement() {
-            statements.add(allowStatement);
-            statements.add(denyStatement);
             return statements.toArray(new AuthPolicy.Statement[statements.size()]);
         }
 
