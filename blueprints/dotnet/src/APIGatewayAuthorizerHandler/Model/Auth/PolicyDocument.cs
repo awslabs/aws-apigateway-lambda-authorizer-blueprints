@@ -1,12 +1,13 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace APIGatewayAuthorizerHandler.Model.Auth
 {
     public class PolicyDocument
     {
         [JsonProperty(PropertyName = "Version")]
-        public string Version { get; set; } = "2012-10-17";
+        public string Version { get; set; }
         [JsonProperty(PropertyName = "Statement")]
-        public Statement Statement { get; set; }
+        public IEnumerable<Statement> Statement { get; set; }
     }
 }

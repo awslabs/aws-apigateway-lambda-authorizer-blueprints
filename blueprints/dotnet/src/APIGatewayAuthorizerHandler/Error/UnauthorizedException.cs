@@ -2,7 +2,7 @@
 {
     internal class UnauthorizedException : System.Exception
     {
-        internal UnauthorizedException() : base("Unauthorized")
+        public UnauthorizedException() : base("Unauthorized")
         {
         }
     }
