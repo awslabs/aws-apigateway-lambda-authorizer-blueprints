@@ -6,6 +6,7 @@ using Amazon.APIGateway.Model;
 using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Auth.AccessControlPolicy;
 using Amazon.Auth.AccessControlPolicy.ActionIdentifiers;
+using Newtonsoft.Json;
 using Amazon.Lambda.Core;
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
@@ -17,54 +18,42 @@ namespace Auth
     {
         
         
-        public Policy FunctionHandler(APIGatewayCustomAuthorizerRequest authEvent, ILambdaContext context)
+        public AuthPolicy FunctionHandler(APIGatewayCustomAuthorizerRequest authEvent, ILambdaContext context)
         {
             
             
             try
             {
-                // validate the token -- checking auth should be filled in, current function just returns true for all tokens
+                // validate the token
                 var token = authEvent.AuthorizationToken;
                 bool authorized = CheckAuthorization(token);
-                Policy policy;
+
+                // Create the policy statement
+                // This matches the policy statement example in the documentation, including the ARN
+                var authPolicy = new AuthPolicy();
+                authPolicy.prinicpalId = token;
+                authPolicy.policyStatement = new PolicyStatement();
+                authPolicy.policyStatement.Version = "2012-10-17";
+                authPolicy.policyStatement.Statement = new List<States>();
                 if (authorized)
                 {
-                    // Create the policy statement -- this example allows s3 bucket notifications
-                    // See the SDK for list of allowed Action Identifiers
-
-                    // First, Allow Access to s3 Bucket changes 
-                    var policyStatementList = new List<Statement>();
-                    var s3PolicyStatement = new Statement(Statement.StatementEffect.Allow);
-                    var s3ActionIdentifier = S3ActionIdentifiers.GetBucketNotification;
-                    s3PolicyStatement.Actions.Add(s3ActionIdentifier);
-
-                    // Add Principals-- This case all Users
-                    s3PolicyStatement.Principals.Add(Principal.AllUsers);
-                    // Specify the resource, in this case a test bucket
-                    var resource = ResourceFactory.NewS3BucketResource("My-Bucket");
-                    s3PolicyStatement.Resources.Add(resource);
-                    policyStatementList.Add(s3PolicyStatement);
-                    
-                    
-                    // Add conditions
-                    var condition = ConditionFactory.NewSourceArnCondition("*");
-                    s3PolicyStatement.Conditions.Add(condition);
-                    policy = new Policy("EventListenerPolicy", policyStatementList);
+                    var statement = new States();
+                    statement.Action = "execute-api:Invoke";
+                    statement.Effect = "Allow";
+                    statement.Resource = "arn:aws:execute-api:us-west-2:123456789012:ymy8tbxw7b/*/GET/";
+                    authPolicy.policyStatement.Statement.Add(statement);
                 }
                 else
                 {
-                    // Make an access denied policy
-                    // First, Allow Access to s3 Bucket changes 
-                    var policyStatementList = new List<Statement>();
-                    var s3PolicyStatement = new Statement(Statement.StatementEffect.Deny);
-                    var s3ActionIdentifier = S3ActionIdentifiers.AllS3Actions;
-                    s3PolicyStatement.Actions.Add(s3ActionIdentifier);
-                    
-                    policy = new Policy("AccessDeniedPolicy", policyStatementList);
+                    var statement = new States();
+                    statement.Action = "execute-api:Invoke";
+                    statement.Effect = "Deny";
+                    statement.Resource = "arn:aws:execute-api:us-west-2:123456789012:ymy8tbxw7b/*/GET/";
+                    authPolicy.policyStatement.Statement.Add(statement);
                 }
-                
 
-                return policy;
+
+                return authPolicy;
      
             }
             catch (Exception e)
@@ -79,7 +68,30 @@ namespace Auth
             return true;
         }
     }
+    public class AuthPolicy
+    {
+        public string prinicpalId { get; set; }
+        public PolicyStatement policyStatement { get; set; }
+        public Context context { get; set; }
+    }
+    public class Context
+    {
+        public string stringKey { get; set; }
+        public int numberKey { get; set; }
+        public bool booleanKey { get; set; }
+    }
+    public class PolicyStatement
+    {
+        public string Version { get; set; }
+        public List<States> Statement { get; set; }
 
+    }
+    public class States
+    {
+        public string Action { get; set; }
+        public string Effect { get; set; }
+        public string Resource { get; set; }
+    }
 
  
 
