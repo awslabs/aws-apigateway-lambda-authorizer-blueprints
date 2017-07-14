@@ -1,0 +1,7 @@
+C:\git\emoji\Auth\bin\Debug\netcoreapp1.0\Auth.deps.json
+C:\git\emoji\Auth\bin\Debug\netcoreapp1.0\Auth.dll
+C:\git\emoji\Auth\obj\Debug\netcoreapp1.0\Auth.csprojResolveAssemblyReference.cache
+C:\git\emoji\Auth\obj\Debug\netcoreapp1.0\Auth.AssemblyInfo.cs
+C:\git\emoji\Auth\bin\Debug\netcoreapp1.0\Auth.pdb
+C:\git\emoji\Auth\obj\Debug\netcoreapp1.0\Auth.dll
+C:\git\emoji\Auth\obj\Debug\netcoreapp1.0\Auth.pdb

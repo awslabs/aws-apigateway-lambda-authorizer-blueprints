@@ -1,0 +1,112 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v1.0",
+    "signature": "6f2722e5ddfb72edb9fbd8f5f6f9a982b22a40c7"
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v1.0": {
+      "auth/1.0.0": {
+        "dependencies": {
+          "AWSSDK.APIGateway": "3.3.7.8",
+          "AWSSDK.Core": "3.3.17.2",
+          "Amazon.Lambda.Core": "1.0.0",
+          "Amazon.Lambda.Serialization.Json": "1.0.0",
+          "Newtonsoft.Json": "9.0.1"
+        },
+        "runtime": {
+          "Auth.dll": {}
+        }
+      },
+      "amazon.lambda.core/1.0.0": {
+        "runtime": {
+          "lib/netstandard1.3/Amazon.Lambda.Core.dll": {}
+        }
+      },
+      "amazon.lambda.serialization.json/1.0.0": {
+        "dependencies": {
+          "Amazon.Lambda.Core": "1.0.0",
+          "Newtonsoft.Json": "9.0.1"
+        },
+        "runtime": {
+          "lib/netstandard1.3/Amazon.Lambda.Serialization.Json.dll": {}
+        }
+      },
+      "awssdk.apigateway/3.3.7.8": {
+        "dependencies": {
+          "AWSSDK.Core": "3.3.17.2"
+        },
+        "runtime": {
+          "lib/netstandard1.3/AWSSDK.APIGateway.dll": {}
+        }
+      },
+      "awssdk.core/3.3.17.2": {
+        "runtime": {
+          "lib/netstandard1.3/AWSSDK.Core.dll": {}
+        }
+      },
+      "newtonsoft.json/9.0.1": {
+        "dependencies": {
+          "System.Runtime.Serialization.Primitives": "4.1.1"
+        },
+        "runtime": {
+          "lib/netstandard1.0/Newtonsoft.Json.dll": {}
+        }
+      },
+      "system.runtime.serialization.primitives/4.1.1": {
+        "runtime": {
+          "lib/netstandard1.3/System.Runtime.Serialization.Primitives.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "auth/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "amazon.lambda.core/1.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-+pBYGHaOaDAhu2j8BA5MhKLwxZM7lgmTSroGyCzEqWMBx+uc+QtpED2ShCAkKjKeedXH+LvJpQAUkEtW7rfcgQ==",
+      "path": "amazon.lambda.core/1.0.0",
+      "hashPath": "amazon.lambda.core.1.0.0.nupkg.sha512"
+    },
+    "amazon.lambda.serialization.json/1.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-tPs+L9X3/Gh73CHjwGXNF9/v2yyh4IhyzHqTD7DUgravq6lf5YyjrYVNl9gMGDTY/OWUW088eGC/p6OI6t9gPA==",
+      "path": "amazon.lambda.serialization.json/1.0.0",
+      "hashPath": "amazon.lambda.serialization.json.1.0.0.nupkg.sha512"
+    },
+    "awssdk.apigateway/3.3.7.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-rnxtudNoKOSZntj/KFQo4rAa6xCR3x92xtXBTuxxFPyRdZ4tRIAWD6jxfPiqcRbfY9+GSKXFxQl6CxrxmLgoPw==",
+      "path": "awssdk.apigateway/3.3.7.8",
+      "hashPath": "awssdk.apigateway.3.3.7.8.nupkg.sha512"
+    },
+    "awssdk.core/3.3.17.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ECMn8RsGB9GR7HRQvy2hltjBNZFEX2FTbySlCStHCFEBcK329bablTDy5OcxBQdceqc/PTXt70SytDMHHyWj4Q==",
+      "path": "awssdk.core/3.3.17.2",
+      "hashPath": "awssdk.core.3.3.17.2.nupkg.sha512"
+    },
+    "newtonsoft.json/9.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-U82mHQSKaIk+lpSVCbWYKNavmNH1i5xrExDEquU1i6I5pV6UMOqRnJRSlKO3cMPfcpp0RgDY+8jUXHdQ4IfXvw==",
+      "path": "newtonsoft.json/9.0.1",
+      "hashPath": "newtonsoft.json.9.0.1.nupkg.sha512"
+    },
+    "system.runtime.serialization.primitives/4.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-HZ6Du5QrTG8MNJbf4e4qMO3JRAkIboGT5Fk804uZtg3Gq516S7hAqTm2UZKUHa7/6HUGdVy3AqMQKbns06G/cg==",
+      "path": "system.runtime.serialization.primitives/4.1.1",
+      "hashPath": "system.runtime.serialization.primitives.4.1.1.nupkg.sha512"
+    }
+  }
+}
