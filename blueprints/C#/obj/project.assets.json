@@ -7020,8 +7020,7 @@
       "AWSSDK.Core >= 3.3.17.2",
       "Amazon.Lambda.Core >= 1.0.0",
       "Amazon.Lambda.Serialization.Json >= 1.0.0",
-      "Microsoft.NETCore.App >= 1.0.5",
-      "Newtonsoft.Json >= 9.0.1"
+      "Microsoft.NETCore.App >= 1.0.5"
     ]
   },
   "packageFolders": {
@@ -7030,10 +7029,10 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "\\\\Mac\\Home\\Documents\\Auth\\Auth.csproj",
+      "projectUniqueName": "Z:\\aws-apigateway-lambda-authorizer-blueprints\\blueprints\\C#\\Auth.csproj",
       "projectName": "Auth",
-      "projectPath": "\\\\Mac\\Home\\Documents\\Auth\\Auth.csproj",
-      "outputPath": "\\\\Mac\\Home\\Documents\\Auth\\obj\\",
+      "projectPath": "Z:\\aws-apigateway-lambda-authorizer-blueprints\\blueprints\\C#\\Auth.csproj",
+      "outputPath": "Z:\\aws-apigateway-lambda-authorizer-blueprints\\blueprints\\C#\\obj\\",
       "projectStyle": "PackageReference",
       "originalTargetFrameworks": [
         "netcoreapp1.0"
@@ -7067,10 +7066,6 @@
           "Amazon.Lambda.Serialization.Json": {
             "target": "Package",
             "version": "1.0.0"
-          },
-          "Newtonsoft.Json": {
-            "target": "Package",
-            "version": "9.0.1"
           }
         }
       }

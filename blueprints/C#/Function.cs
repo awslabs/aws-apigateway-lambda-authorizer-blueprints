@@ -6,7 +6,6 @@ using Amazon.APIGateway.Model;
 using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Auth.AccessControlPolicy;
 using Amazon.Auth.AccessControlPolicy.ActionIdentifiers;
-using Newtonsoft.Json;
 using Amazon.Lambda.Core;
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
