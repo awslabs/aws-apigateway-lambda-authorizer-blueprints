@@ -217,7 +217,7 @@ public class AuthPolicy {
         }
     }
 
-    enum HttpMethod {
+    public enum HttpMethod {
         GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS, ALL
     }
 
