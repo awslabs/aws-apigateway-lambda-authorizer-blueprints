@@ -10,6 +10,9 @@ Also available in the Lambda console, the NodeJS blueprint makes it easy to gene
 ## Python
 Also available in the Lambda console, the Python blueprint includes the AuthPolicy class, which makes generating IAM policies simple and easy to understand.
 
+## Go
+Not available in the Lambda console. Use the AuthorizerResponse object to generate IAM policies for your custom authorizer. See comments for more details.
+
 ## Docs ##
 For more details, see public documentation for:
 - API Gateway Custom Authorizers -- [Blog Post](https://aws.amazon.com/blogs/compute/introducing-custom-authorizers-in-amazon-api-gateway/) -- [Developer Guide](http://docs.aws.amazon.com/apigateway/latest/developerguide/use-custom-authorizer.html)
