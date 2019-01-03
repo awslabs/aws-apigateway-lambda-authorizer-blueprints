@@ -42,7 +42,7 @@ public class AuthPolicy {
     transient AuthPolicy.PolicyDocument policyDocumentObject;
     Map<String, Object> policyDocument;
 
-    public AuthPolicy(String principalId, PolicyDocument policyDocumentObject) {
+    public AuthPolicy(String principalId, AuthPolicy.PolicyDocument policyDocumentObject) {
         this.principalId = principalId;
         this.policyDocumentObject = policyDocumentObject;
     }
