@@ -13,6 +13,9 @@ Also available in the Lambda console, the Python blueprint includes the AuthPoli
 ## Go
 Not available in the Lambda console. Use the AuthorizerResponse object to generate IAM policies for your custom authorizer. See comments for more details.
 
+## Rust
+Not available in the Lambda console. Using `awslabs/aws-lambda-rust-runtime`. Use the APIGatewayPolicyBuilder object to generate IAM policies for your custom authorizer. See comments for more details.
+
 ## Docs ##
 For more details, see public documentation for:
 - API Gateway Custom Authorizers -- [Blog Post](https://aws.amazon.com/blogs/compute/introducing-custom-authorizers-in-amazon-api-gateway/) -- [Developer Guide](http://docs.aws.amazon.com/apigateway/latest/developerguide/use-custom-authorizer.html)
