@@ -13,7 +13,7 @@ import re
 
 
 def lambda_handler(event, context):
-    """Print the token for debugging """
+    """Print the auth token for debugging """
     #print("Client token: " + event['authorizationToken'])
     print("Method ARN: " + event['methodArn'])
     """validate the incoming token"""
