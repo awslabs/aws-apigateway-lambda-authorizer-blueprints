@@ -23,7 +23,7 @@ import (
 )
 
 func handleRequest(ctx context.Context, event events.APIGatewayCustomAuthorizerRequest) (events.APIGatewayCustomAuthorizerResponse, error) {
-	// We shouldn't print the auth token unless absolutely necessary
+	// Do not print the auth token unless absolutely necessary
 +	// log.Println("Client token: " + event.AuthorizationToken)
 	log.Println("Method ARN: " + event.MethodArn)
 
