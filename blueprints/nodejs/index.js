@@ -10,7 +10,8 @@
 console.log('Loading function');
 
 exports.handler = function(event, context, callback) {
-    console.log('Client token: ' + event.authorizationToken);
+    // Do not print the auth token unless absolutely necessary
+    // console.log('Client token: ' + event.authorizationToken);
     console.log('Method ARN: ' + event.methodArn);
 
     // validate the incoming token
