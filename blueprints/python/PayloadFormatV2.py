@@ -1,5 +1,5 @@
 """
-Copyright 2015-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+Copyright 2015-2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with the License. A copy of the License is located at
 
@@ -13,9 +13,7 @@ import re
 
 
 def lambda_handler(event, context):
-    """Do not print the auth token unless absolutely necessary """
-    #print("Client token: " + event['authorizationToken'])
-    print("Method ARN: " + event['methodArn'])
+    print("Route ARN: " + event['routeArn'])
     """validate the incoming token"""
     """and produce the principal user identifier associated with the token"""
 
@@ -30,7 +28,7 @@ def lambda_handler(event, context):
 
     """if the token is valid, a policy must be generated which will allow or deny access to the client"""
 
-    """if access is denied, the client will recieve a 403 Access Denied response"""
+    """if access is denied, the client will receive a 403 Access Denied response"""
     """if access is allowed, API Gateway will proceed with the backend integration configured on the method that was called"""
 
     """this function must generate a policy that is associated with the recognized principal user identifier."""
@@ -41,7 +39,7 @@ def lambda_handler(event, context):
     """made with the same token"""
 
     """the example policy below denies access to all resources in the RestApi"""
-    tmp = event['methodArn'].split(':')
+    tmp = event['routeArn'].split(':')
     apiGatewayArnTmp = tmp[5].split('/')
     awsAccountId = tmp[4]
 
@@ -56,14 +54,14 @@ def lambda_handler(event, context):
     authResponse = policy.build()
  
     # new! -- add additional key-value pairs associated with the authenticated principal
-    # these are made available by APIGW like so: $context.authorizer.<key>
+    # these are made available by API Gateway like so: $context.authorizer.<key>
     # additional context is cached
     context = {
         'key': 'value', # $context.authorizer.key -> value
         'number' : 1,
         'bool' : True
     }
-    # context['arr'] = ['foo'] <- this is invalid, APIGW will not accept it
+    # context['arr'] = ['foo'] <- this is invalid, API Gateway will not accept it
     # context['obj'] = {'foo':'bar'} <- also invalid
  
     authResponse['context'] = context
@@ -82,7 +80,7 @@ class HttpVerb:
 
 class AuthPolicy(object):
     awsAccountId = ""
-    """The AWS account id the policy will be generated for. This is used to create the method ARNs."""
+    """The AWS account id the policy will be generated for. This is used to create the Route ARNs."""
     principalId = ""
     """The principal used for the policy, this should be a unique identifier for the end user."""
     version = "2012-10-17"
@@ -93,7 +91,7 @@ class AuthPolicy(object):
     """these are the internal lists of allowed and denied methods. These are lists
     of objects and each object has 2 properties: A resource ARN and a nullable
     conditions statement.
-    the build method processes these lists and generates the approriate
+    the build method processes these lists and generates the appropriate
     statements for the final policy"""
     allowMethods = []
     denyMethods = []
@@ -144,7 +142,7 @@ class AuthPolicy(object):
             })
 
     def _getEmptyStatement(self, effect):
-        """Returns an empty statement object prepopulated with the correct action and the
+        """Returns an empty statement object pre-populated with the correct action and the
         desired effect."""
         statement = {
             'Action': 'execute-api:Invoke',

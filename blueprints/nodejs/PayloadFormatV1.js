@@ -1,5 +1,5 @@
 /*
-* Copyright 2015-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+* Copyright 2015-2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with the License. A copy of the License is located at
 *
@@ -61,14 +61,14 @@ exports.handler = function(event, context, callback) {
     var authResponse = policy.build();
 
     // new! -- add additional key-value pairs
-    // these are made available by APIGW like so: $context.authorizer.<key>
+    // these are made available by API Gateway like so: $context.authorizer.<key>
     // additional context is cached
     authResponse.context = {
         key : 'value', // $context.authorizer.key -> value
         number : 1,
         bool: true
     };
-    // authResponse.context.arr = ['foo']; <- this is invalid, APIGW will not accept it
+    // authResponse.context.arr = ['foo']; <- this is invalid, API Gateway will not accept it
     // authResponse.context.obj = {'foo':'bar'}; <- also invalid
  
     callback(null, authResponse);
@@ -223,13 +223,13 @@ AuthPolicy.prototype = (function() {
   };
 
   /**
-   * Returns an empty statement object prepopulated with the correct action and the
+   * Returns an empty statement object pre-populated with the correct action and the
    * desired effect.
    *
    * @method getEmptyStatement
    * @param {String} The effect of the statement, this can be "Allow" or "Deny"
    * @return {Object} An empty statement object with the Action, Effect, and Resource
-   *                  properties prepopulated.
+   *                  properties pre-populated.
    */
   var getEmptyStatement = function(effect) {
     effect = effect.substring(0, 1).toUpperCase() + effect.substring(1, effect.length).toLowerCase();
