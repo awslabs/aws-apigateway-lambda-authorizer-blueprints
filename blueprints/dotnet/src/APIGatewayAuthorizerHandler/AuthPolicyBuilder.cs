@@ -22,7 +22,7 @@ namespace APIGatewayAuthorizerHandler
         /// </summary>
         private readonly Regex _pathRegex = new Regex("^[/.a-zA-Z0-9-\\*]+$");
         
-        // these are the values exctracted from the API Options passed into the construction
+        // these are the values extracted from the API Options passed into the construction
         // these options default to a "*" if the input option was empty
         private readonly string _restApiId;
         private readonly string _region;
@@ -41,7 +41,7 @@ namespace APIGatewayAuthorizerHandler
         // these are the internal lists of allowed and denied methods. These are lists
         // of objects and each object has 2 properties: A resource ARN and a nullable
         // conditions statement.
-        // the build method processes these lists and generates the approriate
+        // the build method processes these lists and generates the appropriate
         // statements for the final policy
         private struct Method
         {
