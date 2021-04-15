@@ -28,7 +28,7 @@ exports.handler = async function(event) {
   // The principal identifier can come from a variety of sources such as a call to an OAuth
   // provider, decoding a JWT token inline, or a lookup in a self-managed DB. You are responsible
   // for its creation and management.
-  const principalId = 'user|a1b2c3d4'
+  const principalId = 'user|a1b2c3d4';
 
   // You can send a 401 Unauthorized response to the client by failing like so:
   // throw new Error('Unauthorized');
@@ -119,7 +119,7 @@ const authPolicyFromEvent = function(event, principalId) {
         stage: apiGatewayStagePart
       }
     };
-  }
+  };
 
   const arn = event.version === Payload.VERSION_1
     ? event.methodArn
@@ -379,4 +379,4 @@ const authPolicy = function(_principalId, _awsAccountId, apiOptions) {
       };
     }
   };
-}
+};
