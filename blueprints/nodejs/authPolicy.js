@@ -8,7 +8,7 @@
 * or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-exports.handler = function(event, context, callback) {
+exports.handler = async function(event) {
 
   /**
    Validate the incoming token (available on event.authorizationToken for V1 payload or event.authorization for V2 payload)
@@ -21,7 +21,7 @@ exports.handler = function(event, context, callback) {
   const principalId = 'user|a1b2c3d4'
 
   // You can send a 401 Unauthorized response to the client by failing like so:
-  // callback("Unauthorized", null);
+  // throw new Error('Unauthorized');
 
   /**
    If the token is valid, a policy must be generated which will allow or deny access to the client.
@@ -38,18 +38,21 @@ exports.handler = function(event, context, callback) {
    request, allows conditional access to /cars and adds additional context available by APIGW like so: $context.authorizer.<key> .
    This context is also cached with the policy.
    */
-  const authPolicy = authPolicyFromEvent(event, principalId)
-    .allowMethod(HttpVerb.GET, '/users/username')
-    .denyMethod(HttpVerb.POST, '/pets')
-    .allowMethodWithConditions(HttpVerb.ALL, '/cars', {"NumericLessThanEquals": {"aws:MultiFactorAuthAge": "3600"}})
-    .withContext({
-      key: 'value', // $context.authorizer.key -> value
-      number: 1,
-      bool: true
-    })
-    .build();
-
-  callback(null, authPolicy);
+  try {
+    return authPolicyFromEvent(event, principalId)
+      .allowMethod(HttpVerb.GET, '/users/username')
+      .denyMethod(HttpVerb.POST, '/pets')
+      .allowMethodWithConditions(HttpVerb.ALL, '/cars', {"NumericLessThanEquals": {"aws:MultiFactorAuthAge": "3600"}})
+      .withContext({
+        key: 'value', // $context.authorizer.key -> value
+        number: 1,
+        bool: true
+      })
+      .build();
+  } catch (err) {
+    console.error(`AuthPolicy generation failed, principalId: ${principalId}, error: ${err}`);
+    throw new Error('Unauthorized');
+  }
 };
 
 const ALL_RESOURCES = '*';
@@ -192,8 +195,8 @@ const authPolicy = function(_principalId, _awsAccountId, apiOptions) {
     const resourceArn = `arn:aws:execute-api:${region}:${awsAccountId}:${restApiId}/${stage}/${verb}/${formatResource(resource)}`;
 
     const method = {
-      resourceArn,
-      conditions,
+      resourceArn: resourceArn,
+      conditions: conditions,
 
       hasConditions: () => conditions && conditions.length !== 0
     };
