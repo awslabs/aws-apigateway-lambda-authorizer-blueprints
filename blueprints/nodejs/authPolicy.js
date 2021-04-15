@@ -8,6 +8,43 @@
 * or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
+exports.handler = function(event, context, callback) {
+
+  // Validate the incoming token (available on event.authorizationToken for V1 payload or event.authorization for V2 payload) 
+  // and produce the principal user identifier associated with the token.
+  // This could be accomplished in a number of ways:
+  // 1. Call out to OAuth provider
+  // 2. Decode a JWT token inline
+  // 3. Lookup in a self-managed DB
+  const principalId = 'user|a1b2c3d4'
+
+  // You can send a 401 Unauthorized response to the client by failing like so:
+  // callback("Unauthorized", null);
+
+  // If the token is valid, a policy must be generated which will allow or deny access to the client.
+  // If access is denied, the client will receive a 403 Access Denied response.
+  // If access is allowed, API Gateway will proceed with the backend integration configured on the method that was called.
+
+  // This function must generate a policy that is associated with the recognized principal user identifier.
+  // Depending on your use case, you might store policies in a DB, or generate them on the fly.
+
+  // Keep in mind, the policy is cached for 5 minutes by default (TTL is configurable in the authorizer)
+  // and will apply to subsequent calls to any method/resource in the RestApi made with the same token.
+
+  // The example policy below denies access to all resources in the RestApi and adds additional context
+  // available by APIGW like so: $context.authorizer.<key> . This context is cached.
+  const authPolicy = authPolicyFromEvent(event, principalId)
+    .denyAllMethods()
+    .withContext({
+      key : 'value', // $context.authorizer.key -> value
+      number : 1,
+      bool: true
+    })
+    .build();
+
+  callback(null, authPolicy);
+};
+
 const Payload = {
   VERSION_1: '1.0',
   VERSION_2: '2.0'
@@ -15,6 +52,13 @@ const Payload = {
 
 const ALL_RESOURCES = '*';
 
+/**
+ * A set of existing HTTP verbs supported by API Gateway. This property is here
+ * only to avoid spelling mistakes in the policy.
+ *
+ * @property HttpVerb
+ * @type {Object}
+ */
 const HttpVerb = {
   GET: 'GET',
   POST: 'POST',
@@ -37,6 +81,31 @@ const Action = {
 
 const authPolicyFromEvent = function(event, principalId) {
 
+  // Arn format: 'arn:aws:execute-api:eu-west-1:123456789102:vjpmhhtdi6/dev/GET/test'
+  const extractInfosFromArn = arn => {
+
+    const parts = arn.split(':');
+
+    if (parts.length < 6) {
+      throw new Error('Invalid arn format');
+    }
+
+    const regionPart = parts[3];
+    const awsAccountIdPart = parts[4];
+    const apiGatewayArnParts = parts[5].split('/');
+    const apiGatewayRestApiIdPart = apiGatewayArnParts[0];
+    const apiGatewayStagePart = apiGatewayArnParts[1];
+
+    return {
+      region: regionPart,
+      awsAccountId: awsAccountIdPart,
+      apiGateway: {
+        restApiId: apiGatewayRestApiIdPart,
+        stage: apiGatewayStagePart
+      }
+    };
+  }
+
   const arn = event.version === Payload.VERSION_1
     ? event.methodArn
     : event.routeArn;
@@ -53,31 +122,6 @@ const authPolicyFromEvent = function(event, principalId) {
     stage: infos.apiGateway.stage
   });
 };
-
-// Arn format: 'arn:aws:execute-api:eu-west-1:123456789102:vjpmhhtdi6/dev/GET/test'
-const extractInfosFromArn = arn => {
-
-  const parts = arn.split(':');
-
-  if (parts.length < 6) {
-    throw new Error('Invalid arn format');
-  }
-
-  const regionPart = parts[3];
-  const awsAccountIdPart = parts[4];
-  const apiGatewayArnParts = parts[5].split('/');
-  const apiGatewayRestApiIdPart = apiGatewayArnParts[0];
-  const apiGatewayStagePart = apiGatewayArnParts[1];
-
-  return {
-    region: regionPart,
-    awsAccountId: awsAccountIdPart,
-    apiGateway: {
-      restApiId: apiGatewayRestApiIdPart,
-      stage: apiGatewayStagePart
-    }
-  };
-}
 
 const authPolicy = function(_principalId, _awsAccountId, apiOptions) {
 
@@ -309,10 +353,3 @@ const authPolicy = function(_principalId, _awsAccountId, apiOptions) {
     }
   };
 }
-
-module.exports = {
-  authPolicyFromEvent,
-  authPolicy,
-  HttpVerb,
-  Effect
-};
