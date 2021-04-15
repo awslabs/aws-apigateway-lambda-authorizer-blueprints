@@ -8,36 +8,31 @@
 * or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
+/**
+ * A custom authorizer function for API Gateway. Validates an incoming token and produces the
+ * principal user identifier with the token. Because this function is asynchronous it doesn't need
+ * to use the callback parameter, it just returns data or throws if there is an error.
+ *
+ * This function must generate a policy that is associated with the recognized principal user
+ * identifier. Depending on your use case, you might store policies in a DB, or generate them on
+ * the fly.
+ *
+ * Keep in mind that the policy is cached for the configurable authorizer TTL and will apply to
+ * subsequent calls to any method/resource in the REST API made with the same token until the TTL
+ * on the response has expired. If access to the API resource is denied based on the authorizer's
+ * policy response, the client will receive a 403 Access Denied response. If access is allowed, API
+ * gateway will proceed with backend integration configured on the method that was called.
+ */
 exports.handler = async function(event) {
 
-  /**
-   Validate the incoming token (available on event.authorizationToken for V1 payload or event.authorization for V2 payload)
-   and produce the principal user identifier associated with the token.
-   This could be accomplished in a number of ways:
-     1. Call out to OAuth provider
-     2. Decode a JWT token inline
-     3. Lookup in a self-managed DB
-   */
+  // The principal identifier can come from a variety of sources such as a call to an OAuth
+  // provider, decoding a JWT token inline, or a lookup in a self-managed DB. You are responsible
+  // for its creation and management.
   const principalId = 'user|a1b2c3d4'
 
   // You can send a 401 Unauthorized response to the client by failing like so:
   // throw new Error('Unauthorized');
 
-  /**
-   If the token is valid, a policy must be generated which will allow or deny access to the client.
-   If access is denied, the client will receive a 403 Access Denied response.
-   If access is allowed, API Gateway will proceed with the backend integration configured on the method that was called.
-
-   This function must generate a policy that is associated with the recognized principal user identifier.
-   Depending on your use case, you might store policies in a DB, or generate them on the fly.
-
-   Keep in mind, the policy is cached for 5 minutes by default (TTL is configurable in the authorizer)
-   and will apply to subsequent calls to any method/resource in the RestApi made with the same token.
-
-   The example policy below allows access to /users/username using GET request, denies access to /pets using POST
-   request, allows conditional access to /cars and adds additional context available by APIGW like so: $context.authorizer.<key> .
-   This context is also cached with the policy.
-   */
   try {
     return authPolicyFromEvent(event, principalId)
       .allowMethod(HttpVerb.GET, '/users/username')
