@@ -1,5 +1,5 @@
 /*
-* Copyright 2015-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+* Copyright 2015-2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with the License. A copy of the License is located at
 *
@@ -10,34 +10,41 @@
 
 exports.handler = function(event, context, callback) {
 
-  // Validate the incoming token (available on event.authorizationToken for V1 payload or event.authorization for V2 payload) 
-  // and produce the principal user identifier associated with the token.
-  // This could be accomplished in a number of ways:
-  // 1. Call out to OAuth provider
-  // 2. Decode a JWT token inline
-  // 3. Lookup in a self-managed DB
+  /**
+   Validate the incoming token (available on event.authorizationToken for V1 payload or event.authorization for V2 payload)
+   and produce the principal user identifier associated with the token.
+   This could be accomplished in a number of ways:
+     1. Call out to OAuth provider
+     2. Decode a JWT token inline
+     3. Lookup in a self-managed DB
+   */
   const principalId = 'user|a1b2c3d4'
 
   // You can send a 401 Unauthorized response to the client by failing like so:
   // callback("Unauthorized", null);
 
-  // If the token is valid, a policy must be generated which will allow or deny access to the client.
-  // If access is denied, the client will receive a 403 Access Denied response.
-  // If access is allowed, API Gateway will proceed with the backend integration configured on the method that was called.
+  /**
+   If the token is valid, a policy must be generated which will allow or deny access to the client.
+   If access is denied, the client will receive a 403 Access Denied response.
+   If access is allowed, API Gateway will proceed with the backend integration configured on the method that was called.
 
-  // This function must generate a policy that is associated with the recognized principal user identifier.
-  // Depending on your use case, you might store policies in a DB, or generate them on the fly.
+   This function must generate a policy that is associated with the recognized principal user identifier.
+   Depending on your use case, you might store policies in a DB, or generate them on the fly.
 
-  // Keep in mind, the policy is cached for 5 minutes by default (TTL is configurable in the authorizer)
-  // and will apply to subsequent calls to any method/resource in the RestApi made with the same token.
+   Keep in mind, the policy is cached for 5 minutes by default (TTL is configurable in the authorizer)
+   and will apply to subsequent calls to any method/resource in the RestApi made with the same token.
 
-  // The example policy below denies access to all resources in the RestApi and adds additional context
-  // available by APIGW like so: $context.authorizer.<key> . This context is cached.
+   The example policy below allows access to /users/username using GET request, denies access to /pets using POST
+   request, allows conditional access to /cars and adds additional context available by APIGW like so: $context.authorizer.<key> .
+   This context is also cached with the policy.
+   */
   const authPolicy = authPolicyFromEvent(event, principalId)
-    .denyAllMethods()
+    .allowMethod(HttpVerb.GET, '/users/username')
+    .denyMethod(HttpVerb.POST, '/pets')
+    .allowMethodWithConditions(HttpVerb.ALL, '/cars', {"NumericLessThanEquals": {"aws:MultiFactorAuthAge": "3600"}})
     .withContext({
-      key : 'value', // $context.authorizer.key -> value
-      number : 1,
+      key: 'value', // $context.authorizer.key -> value
+      number: 1,
       bool: true
     })
     .build();
@@ -45,16 +52,11 @@ exports.handler = function(event, context, callback) {
   callback(null, authPolicy);
 };
 
-const Payload = {
-  VERSION_1: '1.0',
-  VERSION_2: '2.0'
-};
-
 const ALL_RESOURCES = '*';
 
 /**
  * A set of existing HTTP verbs supported by API Gateway. This property is here
- * only to avoid spelling mistakes in the policy.
+ * to avoid spelling mistakes in the policy.
  *
  * @property HttpVerb
  * @type {Object}
@@ -79,6 +81,21 @@ const Action = {
   EXECUTE_API: 'execute-api:Invoke'
 };
 
+const Payload = {
+  VERSION_1: '1.0',
+  VERSION_2: '2.0'
+};
+
+/**
+ * authPolicyFromEvent is a wrapper to easily use the authPolicy method.
+ * This method extracts awsAccountId and apiOptions from the event payload regardless of the payload version
+ * authPolicy receives a set of allowed and denied methods and generates a valid
+ * AWS policy for the API Gateway authorizer.
+ *
+ * @param {Object} event Event payload issued by API Gateway for lambda (v1 or v2 format)
+ * @param {string} principalId The principal user identifier associated with the validated token
+ * @returns {Object} The authPolicyBuilder object containing methods to generate a policy
+ */
 const authPolicyFromEvent = function(event, principalId) {
 
   // Arn format: 'arn:aws:execute-api:eu-west-1:123456789102:vjpmhhtdi6/dev/GET/test'
@@ -123,6 +140,17 @@ const authPolicyFromEvent = function(event, principalId) {
   });
 };
 
+/**
+ * authPolicy receives a set of allowed and denied methods and generates a valid
+ * AWS policy for the API Gateway authorizer.
+ *
+ * @param {string} _principalId The calling user principal
+ * @param {string} _awsAccountId The AWS account ID of the API owner
+ * @param {Object} apiOptions The apiOptions can contain an API Gateway RestApi Id, a region for the RestApi,
+ *                 and a stage that calls should be allowed/denied for. For example :
+ *                 { resApiId: "xxxxxxxxxx", region: "us-east-1", stage: "dev"}
+ * @returns {Object} The authPolicyBuilder object containing methods to generate a policy
+*/
 const authPolicy = function(_principalId, _awsAccountId, apiOptions) {
 
   const policyVersion = '2012-10-17';
@@ -227,9 +255,9 @@ const authPolicy = function(_principalId, _awsAccountId, apiOptions) {
      * methods for the policy
      *
      * @method allowMethod
-     * @param {string} The HTTP verb for the method, this should ideally come from the
+     * @param {string} verb The HTTP verb for the method, this should ideally come from the
      *                 authPolicy.HttpVerb object to avoid spelling mistakes
-     * @param {string} The resource path. For example "/pets"
+     * @param {string} resource The resource path. For example "/pets"
      */
     allowMethod: function(verb, resource) {
       addMethod(Effect.ALLOW, verb, resource, null);
@@ -239,13 +267,13 @@ const authPolicy = function(_principalId, _awsAccountId, apiOptions) {
     /**
      * Adds an API Gateway method (Http verb + Resource path) to the list of allowed
      * methods and includes a condition for the policy statement. More on AWS policy
-     * conditions here: http://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements.html#Condition
+     * conditions here: https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_condition.html
      *
      * @method allowMethodWithConditions
-     * @param {string} The HTTP verb for the method, this should ideally come from the
+     * @param {string} verb The HTTP verb for the method, this should ideally come from the
      *                 authPolicy.HttpVerb object to avoid spelling mistakes
-     * @param {string} The resource path. For example "/pets"
-     * @param {Object} The conditions object in the format specified by the AWS docs
+     * @param {string} resource The resource path. For example "/pets"
+     * @param {Object} conditions The conditions object in the format specified by the AWS docs
      */
     allowMethodWithConditions: function(verb, resource, conditions) {
       addMethod(Effect.ALLOW, verb, resource, conditions);
@@ -267,9 +295,9 @@ const authPolicy = function(_principalId, _awsAccountId, apiOptions) {
      * methods for the policy
      *
      * @method denyMethod
-     * @param {string} The HTTP verb for the method, this should ideally come from the
+     * @param {string} verb The HTTP verb for the method, this should ideally come from the
      *                 authPolicy.HttpVerb object to avoid spelling mistakes
-     * @param {string} The resource path. For example "/pets"
+     * @param {string} resource The resource path. For example "/pets"
      */
     denyMethod: function(verb, resource) {
       addMethod(Effect.DENY, verb, resource, null);
@@ -279,13 +307,13 @@ const authPolicy = function(_principalId, _awsAccountId, apiOptions) {
     /**
      * Adds an API Gateway method (Http verb + Resource path) to the list of denied
      * methods and includes a condition for the policy statement. More on AWS policy
-     * conditions here: http://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements.html#Condition
+     * conditions here: https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_condition.html
      *
      * @method denyMethodWithConditions
-     * @param {string} The HTTP verb for the method, this should ideally come from the
+     * @param {string} verb The HTTP verb for the method, this should ideally come from the
      *                 authPolicy.HttpVerb object to avoid spelling mistakes
-     * @param {string} The resource path. For example "/pets"
-     * @param {Object} The conditions object in the format specified by the AWS docs
+     * @param {string} resource The resource path. For example "/pets"
+     * @param {Object} conditions The conditions object in the format specified by the AWS docs
      */
     denyMethodWithConditions: function(verb, resource, conditions) {
       addMethod(Effect.DENY, verb, resource, conditions);
@@ -304,9 +332,10 @@ const authPolicy = function(_principalId, _awsAccountId, apiOptions) {
 
     /**
      * Adds a custom statement directly in the policy
+     * Use HttpVerb, Effect, and Action enums to avoid any errors when creating the statement
      *
      * @method addStatement
-     * @param {Object} The statement object
+     * @param {Object} statement The statement object
      */
     addStatement: function(statement) {
       customStatements.push(statement);
@@ -317,7 +346,7 @@ const authPolicy = function(_principalId, _awsAccountId, apiOptions) {
      * Adds a policy context that can be used by the API Gateway with $context.authorizer.<key>
      *
      * @method withContext
-     * @param {Object} The context object in key/value format
+     * @param {Object} ctx The context object in key/value format
      */
     withContext: function(ctx) {
       context = ctx;
