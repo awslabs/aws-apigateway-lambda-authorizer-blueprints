@@ -71,7 +71,7 @@ const HttpVerb = {
 };
 
 /**
- * A set of available effect used by a policy
+ * A set of available effects used by a policy
  *
  * @property Effect
  * @type {Object}
@@ -79,15 +79,6 @@ const HttpVerb = {
 const Effect = {
   ALLOW: 'Allow',
   DENY: 'Deny'
-};
-
-const Action = {
-  EXECUTE_API: 'execute-api:Invoke'
-};
-
-const Payload = {
-  VERSION_1: '1.0',
-  VERSION_2: '2.0'
 };
 
 /**
@@ -101,6 +92,11 @@ const Payload = {
  * @returns {Object} The authPolicyBuilder object containing methods to generate a policy
  */
 const authPolicyFromEvent = function(event, principalId) {
+
+  const Payload = {
+    VERSION_1: '1.0',
+    VERSION_2: '2.0'
+  };
 
   // Arn format: 'arn:aws:execute-api:eu-west-1:123456789102:vjpmhhtdi6/dev/GET/test'
   const extractInfosFromArn = arn => {
@@ -172,6 +168,10 @@ const authPolicy = function(_principalId, _awsAccountId, apiOptions) {
   const customStatements = [];
 
   let context = {};
+
+  const Action = {
+    EXECUTE_API: 'execute-api:Invoke'
+  };
 
   const formatResource = resource => {
 
