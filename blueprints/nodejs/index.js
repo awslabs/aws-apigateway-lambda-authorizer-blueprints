@@ -100,7 +100,6 @@ const authPolicyFromEvent = function(event, principalId) {
 
   // Arn format: 'arn:aws:execute-api:eu-west-1:123456789102:vjpmhhtdi6/dev/GET/test'
   const extractInfosFromArn = arn => {
-
     const parts = arn.split(':');
 
     if (parts.length < 6) {
@@ -174,7 +173,6 @@ const authPolicy = function(_principalId, _awsAccountId, apiOptions) {
   };
 
   const formatResource = resource => {
-
     if (resource.startsWith('/')) {
       return resource.substring(1, resource.length);
     }
@@ -183,7 +181,6 @@ const authPolicy = function(_principalId, _awsAccountId, apiOptions) {
   };
 
   const addMethod = (effect, verb, resource, conditions) => {
-
     if (!HttpVerb[verb] && verb !== ALL_RESOURCES) {
       throw new Error(`Invalid HTTP verb ${verb}. Allowed verbs in HttpVerb enum.`);
     }
