@@ -257,7 +257,7 @@ const authPolicy = function(_principalId, _awsAccountId, apiOptions) {
      *
      * @method allowMethod
      * @param {string} verb The HTTP verb for the method, this should ideally come from the
-     *                 authPolicy.HttpVerb object to avoid spelling mistakes
+     *                 HttpVerb object to avoid spelling mistakes
      * @param {string} resource The resource path. For example "/pets"
      */
     allowMethod: function(verb, resource) {
@@ -272,7 +272,7 @@ const authPolicy = function(_principalId, _awsAccountId, apiOptions) {
      *
      * @method allowMethodWithConditions
      * @param {string} verb The HTTP verb for the method, this should ideally come from the
-     *                 authPolicy.HttpVerb object to avoid spelling mistakes
+     *                 HttpVerb object to avoid spelling mistakes
      * @param {string} resource The resource path. For example "/pets"
      * @param {Object} conditions The conditions object in the format specified by the AWS docs
      */
@@ -297,7 +297,7 @@ const authPolicy = function(_principalId, _awsAccountId, apiOptions) {
      *
      * @method denyMethod
      * @param {string} verb The HTTP verb for the method, this should ideally come from the
-     *                 authPolicy.HttpVerb object to avoid spelling mistakes
+     *                 HttpVerb object to avoid spelling mistakes
      * @param {string} resource The resource path. For example "/pets"
      */
     denyMethod: function(verb, resource) {
@@ -312,7 +312,7 @@ const authPolicy = function(_principalId, _awsAccountId, apiOptions) {
      *
      * @method denyMethodWithConditions
      * @param {string} verb The HTTP verb for the method, this should ideally come from the
-     *                 authPolicy.HttpVerb object to avoid spelling mistakes
+     *                 HttpVerb object to avoid spelling mistakes
      * @param {string} resource The resource path. For example "/pets"
      * @param {Object} conditions The conditions object in the format specified by the AWS docs
      */
