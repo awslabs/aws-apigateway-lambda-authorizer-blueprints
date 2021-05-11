@@ -98,12 +98,13 @@ class AuthPolicy(object):
     allowMethods = []
     denyMethods = []
 
-    restApiId = "*"
-    """The API Gateway API id. By default this is set to '*'"""
-    region = "*"
-    """The region where the API is deployed. By default this is set to '*'"""
-    stage = "*"
-    """The name of the stage used in the policy. By default this is set to '*'"""
+    
+    restApiId = "<<restApiId>>"
+    """Replace the placeholder value with an API Gateway API id, or '*' for all APIs."""
+    region = "<<region>>"
+    """Replace the placeholder value with the region where the API is deployed, or '*' for all regions."""
+    stage = "<<stage>>"
+    """Replace the placeholder value with the name of the stage used in the policy, or '*' for all stages."""
 
     def __init__(self, principal, awsAccountId):
         self.awsAccountId = awsAccountId

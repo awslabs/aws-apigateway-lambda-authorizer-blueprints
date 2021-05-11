@@ -59,9 +59,14 @@ namespace APIGatewayAuthorizerHandler
             PrincipalId = principalId;
             AwsAccountId = awsAccountId;
 
-            _restApiId = string.IsNullOrWhiteSpace(apiOptions?.RestApiId) ? "*" : apiOptions.RestApiId;
-            _region = string.IsNullOrWhiteSpace(apiOptions?.Region) ? "*" : apiOptions.Region;
-            _stage = string.IsNullOrWhiteSpace(apiOptions?.Stage) ? "*" : apiOptions.Stage;
+            // Replace the placeholder value with a default API Gateway API id, or '*' for all APIs.
+            _restApiId = string.IsNullOrWhiteSpace(apiOptions?.RestApiId) ? "<<restApiId>>" : apiOptions.RestApiId;
+
+            // Replace the placeholder value with a default region where the API is deployed, or '*' for all regions.
+            _region = string.IsNullOrWhiteSpace(apiOptions?.Region) ? "<<region>>" : apiOptions.Region;
+
+            // Replace the placeholder value with a default stage name used in the policy, or '*' for all stages.
+            _stage = string.IsNullOrWhiteSpace(apiOptions?.Stage) ? "<<stage>>" : apiOptions.Stage;
         }
 
         public void DenyAllMethods(ICollection<Condition> conditions = null)
