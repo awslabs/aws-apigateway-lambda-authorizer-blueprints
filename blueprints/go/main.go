@@ -155,10 +155,10 @@ func NewAuthorizerResponse(principalID string, AccountID string) *AuthorizerResp
 				Version: "2012-10-17",
 			},
 		},
-		Region:    "*",
+		Region:    "<<region>>", // Replace the placeholder value with the region where the API is deployed, or '*' for all regions.
 		AccountID: AccountID,
-		APIID:     "*",
-		Stage:     "*",
+		APIID:     "<<restApiId>>", // Replace the placeholder value with an API Gateway API id, or '*' for all APIs.
+		Stage:     "<<stage>>", // Replace the placeholder value with the name of the stage used in the policy, or '*' for all stages.
 	}
 }
 

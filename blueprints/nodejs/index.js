@@ -140,17 +140,17 @@ function AuthPolicy(principal, awsAccountId, apiOptions) {
     this.denyMethods = [];
 
     if (!apiOptions || !apiOptions.restApiId) {
-      this.restApiId = "*";
+      this.restApiId = "<<restApiId>>"; // Replace the placeholder value with a default API Gateway API id, or '*' for all APIs.
     } else {
       this.restApiId = apiOptions.restApiId;
     }
     if (!apiOptions || !apiOptions.region) {
-      this.region = "*";
+      this.region = "<<region>>"; // Replace the placeholder value with a default region where the API is deployed, or '*' for all regions.
     } else {
       this.region = apiOptions.region;
     }
     if (!apiOptions || !apiOptions.stage) {
-      this.stage = "*";
+      this.stage = "<<stage>>"; // Replace the placeholder value with a default stage name used in the policy, or '*' for all stages.
     } else {
       this.stage = apiOptions.stage;
     }
