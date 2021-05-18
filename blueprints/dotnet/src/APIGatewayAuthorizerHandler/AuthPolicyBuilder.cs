@@ -58,14 +58,20 @@ namespace APIGatewayAuthorizerHandler
         {
             PrincipalId = principalId;
             AwsAccountId = awsAccountId;
-
-            // Replace the placeholder value with a default API Gateway API id, or '*' for all APIs.
+            
+            // Replace the placeholder value with a default API Gateway API id to be used in the policy. 
+            // Beware of using '*' since it will not simply mean any API Gateway API id, because stars will greedily expand over '/' or other separators. 
+            // See https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_resource.html for more details. 
             _restApiId = string.IsNullOrWhiteSpace(apiOptions?.RestApiId) ? "<<restApiId>>" : apiOptions.RestApiId;
 
-            // Replace the placeholder value with a default region where the API is deployed, or '*' for all regions.
+            // Replace the placeholder value with a default region to be used in the policy. 
+            // Beware of using '*' since it will not simply mean any region, because stars will greedily expand over '/' or other separators. 
+            // See https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_resource.html for more details. 
             _region = string.IsNullOrWhiteSpace(apiOptions?.Region) ? "<<region>>" : apiOptions.Region;
 
-            // Replace the placeholder value with a default stage name used in the policy, or '*' for all stages.
+            // Replace the placeholder value with a default stage to be used in the policy. 
+            // Beware of using '*' since it will not simply mean any stage, because stars will greedily expand over '/' or other separators. 
+            // See https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_resource.html for more details. 
             _stage = string.IsNullOrWhiteSpace(apiOptions?.Stage) ? "<<stage>>" : apiOptions.Stage;
         }
 
