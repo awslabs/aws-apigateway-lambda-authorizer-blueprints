@@ -50,8 +50,14 @@ exports.handler = async function(event) {
   }
 };
 
-const ALL_RESOURCES = '*';
+// Replace the placeholder value with a default API Gateway API id/region/stage to be used in the policy. 
+// Beware of using '*' since it will not simply mean any API Gateway API id/region/stage, because stars will greedily expand over '/' or other separators. 
+// See https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_resource.html for more details.
+const DEFAULT_REST_API_ID = '<<restApiId>>';
+const DEFAULT_REGION = '<<region>>';
+const DEFAULT_STAGE = '<<stage>>';
 
+const ALL_RESOURCES = '*';
 /**
  * A set of existing HTTP verbs supported by API Gateway. This property is here
  * to avoid spelling mistakes in the policy.
@@ -157,9 +163,9 @@ const authPolicy = function(_principalId, _awsAccountId, apiOptions) {
 
   const principalId = _principalId;
   const awsAccountId = _awsAccountId;
-  const restApiId = apiOptions.restApiId || ALL_RESOURCES;
-  const region = apiOptions.region || ALL_RESOURCES;
-  const stage = apiOptions.stage || ALL_RESOURCES;
+  const restApiId = apiOptions.restApiId || DEFAULT_REST_API_ID;
+  const region = apiOptions.region || DEFAULT_REGION;
+  const stage = apiOptions.stage || DEFAULT_STAGE;
 
   const allowedMethods = [];
   const deniedMethods = [];

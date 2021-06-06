@@ -155,10 +155,21 @@ func NewAuthorizerResponse(principalID string, AccountID string) *AuthorizerResp
 				Version: "2012-10-17",
 			},
 		},
-		Region:    "*",
+		// Replace the placeholder value with a default region to be used in the policy. 
+		// Beware of using '*' since it will not simply mean any region, because stars will greedily expand over '/' or other separators. 
+		// See https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_resource.html for more details. 
+		Region:    "<<region>>", 
 		AccountID: AccountID,
-		APIID:     "*",
-		Stage:     "*",
+		
+		// Replace the placeholder value with a default API Gateway API id to be used in the policy. 
+		// Beware of using '*' since it will not simply mean any API Gateway API id, because stars will greedily expand over '/' or other separators. 
+		// See https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_resource.html for more details. 
+		APIID:     "<<restApiId>>", 
+		
+		// Replace the placeholder value with a default stage to be used in the policy. 
+		// Beware of using '*' since it will not simply mean any stage, because stars will greedily expand over '/' or other separators. 
+		// See https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_resource.html for more details. 
+		Stage:     "<<stage>>", 
 	}
 }
 
