@@ -1,5 +1,5 @@
 # Amazon API Gateway - Custom Authorizer Blueprints for AWS Lambda
-We've added blueprints and examples in 3 languages for Lambda-based custom Authorizers for use in API Gateway.
+We've added blueprints and examples in 5 languages for Lambda-based custom Authorizers for use in API Gateway.
 
 ## Java
 Not available in the Lambda console. Use the AuthPolicy object to generate and serialize IAM policies for your custom authorizer. See javadoc comments for more details.
