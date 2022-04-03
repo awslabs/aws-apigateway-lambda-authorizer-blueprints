@@ -133,7 +133,17 @@ class AuthPolicy(object):
         if resource[:1] == "/":
             resource = resource[1:]
 
-        resourceArn = ("arn:aws:execute-api:" +
+        """Added check for cn region in ARN and build the resourceARN accordingly."""
+        if re.search("cn", self.region):
+            resourceArn = ("arn:aws-cn:execute-api:" +
+            self.region + ":" +
+            self.awsAccountId + ":" +
+            self.restApiId + "/" +
+            self.stage + "/" +
+            verb + "/" +
+            resource)
+        else:
+            resourceArn = ("arn:aws:execute-api:" +
             self.region + ":" +
             self.awsAccountId + ":" +
             self.restApiId + "/" +
